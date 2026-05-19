@@ -57,7 +57,7 @@ jobs:
           if echo "$MSG" | grep -qi "audio-only: *true";    then AUDIO_ONLY="true"; fi
           if echo "$MSG" | grep -qi "subtitles: *true";     then SUBTITLES="true"; fi
           if echo "$MSG" | grep -qi "sponsorblock: *false"; then SPONSORBLOCK="false"; fi
-          if echo "$MSG" | grep -qi "impersonate: *chrome"; then IMPERSONATE="true"; fi
+          if echo "$MSG" | grep -qi "impersonate: *true";   then IMPERSONATE="true"; fi
 
           mkdir -p downloads
 
@@ -159,7 +159,7 @@ jobs:
         run: |
           BRANCH="${GITHUB_REF_NAME}"
           git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git config.user.email "github-actions@github.com"
           git add downloads/
           git commit -m "Add downloaded files from commit [skip ci]" || echo "Nothing to commit"
           echo "🚀 Pushing to branch: $BRANCH"
