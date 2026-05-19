@@ -24,7 +24,10 @@ jobs:
           key: yt-dlp-${{ runner.os }}-${{ hashFiles('**/requirements.txt') }}
 
       - name: Setup yt-dlp
-        run: pip install yt-dlp curl-cffi
+        run: |
+          pip install yt-dlp "curl-cffi==0.7.4"
+          echo "--- Available impersonate targets ---"
+          yt-dlp --list-impersonate-targets
           
       - name: Setup YouTube Cookies
         run: |
