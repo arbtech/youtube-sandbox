@@ -41,7 +41,6 @@ jobs:
 
           echo "📥 URL: $URL"
 
-          # Default options
           QUALITY="best"
           PLAYLIST="--no-playlist"
           AUDIO_ONLY="false"
@@ -61,17 +60,13 @@ jobs:
 
           mkdir -p downloads
 
-          echo "⚙️ Options: Quality=$QUALITY | Playlist=${PLAYLIST/--no-playlist/Disabled} | Audio=$AUDIO_ONLY | Impersonate Chrome=$IMPERSONATE"
+          echo "⚙️ Options: Quality=$QUALITY | Playlist=${PLAYLIST/--no-playlist/Disabled} | Audio=$AUDIO_ONLY | Impersonate=$IMPERSONATE"
 
           YT_CMD="yt-dlp \
             --concurrent-fragments 8 \
             --retries 10 \
             --fragment-retries 10 \
             --cookies ~/.cache/yt-dlp/youtube/cookies.txt"
-
-          if [ "$IMPERSONATE" = "true" ]; then
-            YT_CMD="$YT_CMD --impersonate chrome"
-          fi
 
           if [ "$AUDIO_ONLY" = "true" ]; then
             YT_CMD="$YT_CMD -x --audio-format mp3 --audio-quality 0"
@@ -91,8 +86,9 @@ jobs:
             YT_CMD="$YT_CMD --no-playlist"
           fi
 
-          [ "$SUBTITLES" = "true" ] && YT_CMD="$YT_CMD --write-auto-sub --embed-subs"
-          [ "$SPONSORBLOCK" = "true" ] && YT_CMD="$YT_CMD --sponsorblock-remove all"
+          [ "$SUBTITLES"    = "true"  ] && YT_CMD="$YT_CMD --write-auto-sub --embed-subs"
+          [ "$SPONSORBLOCK" = "true"  ] && YT_CMD="$YT_CMD --sponsorblock-remove all"
+          [ "$IMPERSONATE"  = "true"  ] && YT_CMD="$YT_CMD --impersonate chrome"
 
           YT_CMD="$YT_CMD --embed-metadata --embed-thumbnail --embed-chapters --restrict-filenames"
           YT_CMD="$YT_CMD --output 'downloads/%(title)s [%(id)s].%(ext)s'"
@@ -100,8 +96,7 @@ jobs:
           echo "🚀 Running yt-dlp..."
           eval "$YT_CMD \"$URL\""
 
-          echo "✅ Download finished"
-          
+          echo "✅ Download finished"          
       - name: Split large files into 90MB chunks
         run: |
           echo "🔧 Processing downloaded files for splitting..."
