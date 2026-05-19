@@ -28,11 +28,11 @@ jobs:
           sudo pip install yt-dlp "curl-cffi==0.10.0" --break-system-packages
           yt-dlp --list-impersonate-targets
           
-      - name: Setup YouTube Cookies
+      - name: Setup Cookies
         run: |
           mkdir -p ~/.cache/yt-dlp/youtube
           echo "${{ secrets.YOUTUBE_COOKIES }}" > ~/.cache/yt-dlp/youtube/cookies.txt
-          echo "✅ Cookies installed ($(wc -l < ~/.cache/yt-dlp/youtube/cookies.txt) lines)"
+          echo "${{ secrets.PORNHUB_COOKIES }}"  > ~/.cache/yt-dlp/pornhub/cookies.txt
 
       - name: Parse commit message and download
         run: |
@@ -74,7 +74,8 @@ jobs:
             --concurrent-fragments 8 \
             --retries 10 \
             --fragment-retries 10 \
-            --cookies ~/.cache/yt-dlp/youtube/cookies.txt"
+            --cookies ~/.cache/yt-dlp/youtube/cookies.txt \
+            --cookies ~/.cache/yt-dlp/pornhub/cookies.txt"
 
           if [ "$AUDIO_ONLY" = "true" ]; then
             YT_CMD="$YT_CMD -x --audio-format mp3 --audio-quality 0"
