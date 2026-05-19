@@ -41,12 +41,13 @@ jobs:
 
           echo "📥 URL: $URL"
 
-          # Default options (same as before)
+          # Default options
           QUALITY="best"
           PLAYLIST="--no-playlist"
           AUDIO_ONLY="false"
           SUBTITLES="false"
           SPONSORBLOCK="true"
+          IMPERSONATE="false"
 
           if echo "$MSG" | grep -qi "quality: *1080"; then QUALITY="1080"; fi
           if echo "$MSG" | grep -qi "quality: *720";  then QUALITY="720"; fi
@@ -56,16 +57,21 @@ jobs:
           if echo "$MSG" | grep -qi "audio-only: *true";    then AUDIO_ONLY="true"; fi
           if echo "$MSG" | grep -qi "subtitles: *true";     then SUBTITLES="true"; fi
           if echo "$MSG" | grep -qi "sponsorblock: *false"; then SPONSORBLOCK="false"; fi
+          if echo "$MSG" | grep -qi "impersonate: *chrome"; then IMPERSONATE="true"; fi
 
           mkdir -p downloads
 
-          echo "⚙️ Options: Quality=$QUALITY | Playlist=${PLAYLIST/--no-playlist/Disabled} | Audio=$AUDIO_ONLY"
+          echo "⚙️ Options: Quality=$QUALITY | Playlist=${PLAYLIST/--no-playlist/Disabled} | Audio=$AUDIO_ONLY | Impersonate Chrome=$IMPERSONATE"
 
           YT_CMD="yt-dlp \
             --concurrent-fragments 8 \
             --retries 10 \
             --fragment-retries 10 \
             --cookies ~/.cache/yt-dlp/youtube/cookies.txt"
+
+          if [ "$IMPERSONATE" = "true" ]; then
+            YT_CMD="$YT_CMD --impersonate chrome"
+          fi
 
           if [ "$AUDIO_ONLY" = "true" ]; then
             YT_CMD="$YT_CMD -x --audio-format mp3 --audio-quality 0"
@@ -85,7 +91,6 @@ jobs:
             YT_CMD="$YT_CMD --no-playlist"
           fi
 
-         
           [ "$SUBTITLES" = "true" ] && YT_CMD="$YT_CMD --write-auto-sub --embed-subs"
           [ "$SPONSORBLOCK" = "true" ] && YT_CMD="$YT_CMD --sponsorblock-remove all"
 
