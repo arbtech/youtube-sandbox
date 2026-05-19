@@ -30,9 +30,11 @@ jobs:
           
       - name: Setup Cookies
         run: |
-          mkdir -p ~/.cache/yt-dlp/youtube
+          mkdir -p ~/.cache/yt-dlp/{youtube,pornhub}
           echo "${{ secrets.YOUTUBE_COOKIES }}" > ~/.cache/yt-dlp/youtube/cookies.txt
           echo "${{ secrets.PORNHUB_COOKIES }}"  > ~/.cache/yt-dlp/pornhub/cookies.txt
+          echo "✅ YouTube cookies: $(wc -l < ~/.cache/yt-dlp/youtube/cookies.txt) lines"
+          echo "✅ PornHub cookies: $(wc -l < ~/.cache/yt-dlp/pornhub/cookies.txt) lines"
 
       - name: Parse commit message and download
         run: |
